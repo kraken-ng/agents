@@ -1,0 +1,6 @@
+# TODO
+
+- [ ] PHP Agent using `include()` or `require()` functions.
+- [ ] PHP Agent using `create_function()` function (PHP <= 7 only).
+- [ ] Java Agent using `JavaCompiler` (Java OpenJDK only).
+- [ ] NET Agent using `Assembly.Load()` function.
