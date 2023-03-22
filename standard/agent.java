@@ -51,7 +51,7 @@
 
         private final String RES_STATUS_KEY                  = "status";
         private final String RES_MESSAGE_KEY                 = "message";
-        
+
         private final String ACTION_STATUS                   = "0";
         private final String ACTION_INVOKE                   = "1";
 
@@ -98,7 +98,7 @@
                     return null;
 
                 for (int i = 0; i < cookie_list.length; i++)
-                { 
+                {
                     Cookie c = cookie_list[i];
 
                     String cookie_name = c.getName();
@@ -137,7 +137,7 @@
         {
             if ((data.length() % 2) == 1)
                 throw new Exception("hex2bin(): data cannot have an odd number of digits");
-            
+
             byte[] data_bytes = new byte[data.length() / 2];
             for (int i = 0; i < data.length(); i += 2)
             {
@@ -193,7 +193,7 @@
                 throw new Exception("unprotect() failed");
             }
         }
-        
+
         private byte[] compress(byte[] data) throws Exception
         {
             try
@@ -244,7 +244,7 @@
             String[] fields = data.split(FIELD_SEPARATOR);
             if (fields.length < 1)
                 throw new Exception("unpack_data(): Split() fields < 1");
-            
+
             Map<String, String> dict = new HashMap<String, String>();
             for (String field: fields)
             {
@@ -265,8 +265,8 @@
                 {
                     throw new Exception("unpack_data(): Split() values != 2");
                 }
-                    
-                
+
+
                 dict.put(vals[0], vals[1]);
             }
             return dict;
@@ -313,7 +313,7 @@
                 return false;
             }
         }
-        
+
         private String do_status() throws Exception
         {
             String response = "";
@@ -338,7 +338,7 @@
 
             byte[] action_data_bytes = hex2bin(unpacked_request.get(REQ_MSG_KEY));
             String action_data_str = new String(action_data_bytes);
-            
+
             Map<String, String> action_data_unpack = unpack_data(action_data_str);
             if (action_data_unpack.containsKey(REQ_MOD_NAME_KEY) == false)
                 return generate_response(ERR_CODE, ERR_NONEXISTENT_MOD_NAME);
@@ -407,7 +407,6 @@
         {
             response.setStatus(HttpServletResponse.SC_OK);
             _output = handler.handle();
-            response.setContentLength(_output.length());
             response.getWriter().write(_output);
         }
         else

