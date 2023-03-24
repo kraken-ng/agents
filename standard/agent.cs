@@ -361,7 +361,6 @@
                 compilerParams.GenerateInMemory = true;
                 compilerParams.GenerateExecutable = false;
                 compilerParams.ReferencedAssemblies.Add("System.dll");
-                //compilerParams.ReferencedAssemblies.Add("System.Linq.dll");
 
                 load_references(compilerParams, mod_refs);
 
