@@ -26,6 +26,7 @@ At the moment, the executors used by Kraken agents are very simple but allow a c
 |    PHP   |  JAVA (JSP)   |     .NET (ASPX)      |
 |:--------:|:-------------:|:--------------------:|
 | `eval()` | `ClassLoader` | `CSharpCodeProvider` |
+|    -     |       -       |  `Assembly.Load()`   |
 
 There are many more executors that can be used. But, for now, these 3 are standard in most web platforms and we have been able to build the tool according to them.
 
