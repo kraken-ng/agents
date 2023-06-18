@@ -1,6 +1,10 @@
 # TODO
 
+- [x] PHP Agent using `eval()` function.
 - [ ] PHP Agent using `include()` or `require()` functions.
 - [ ] PHP Agent using `create_function()` function (PHP <= 7 only).
+- [x] Java Agent using `ClassLoader` library.
 - [ ] Java Agent using `JavaCompiler` (Java OpenJDK only).
-- [ ] NET Agent using `Assembly.Load()` function.
+- [x] NET Agent using `CsharCodeProvider` library.
+- [x] NET Agent using `Assembly.Load()` function.
+- [ ] NET Agent using `Dynamic Method and Emitted MSIL Instructions`.
