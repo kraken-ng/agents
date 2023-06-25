@@ -26,9 +26,24 @@ At the moment, the executors used by Kraken agents are very simple but allow a c
 |    PHP   |  JAVA (JSP)   |     .NET (ASPX)      |
 |:--------:|:-------------:|:--------------------:|
 | `eval()` | `ClassLoader` | `CSharpCodeProvider` |
-|    -     |       -       |  `Assembly.Load()`   |
+| `create_function()` | - |  `Assembly.Load()` |
+| `include() / require()` | - | - |
 
-There are many more executors that can be used. But, for now, these 3 are standard in most web platforms and we have been able to build the tool according to them.
+There are many more executors that can be used. But, there are 3 default agents that work in most the web platforms and we have been able to build the tool according to them:
+- In PHP: `eval()`
+- In Java: `ClassLoader`
+- In .NET: `CSharpCodeProvider`
+
+The following table contains the relationship between the executors and compilers that must be used in order for the modules to be loaded correctly:
+
+| Language | Executor | Compiler |
+|:--------:|:--------:|:--------:|
+| PHP | `eval()` | raw |
+| PHP | `create_function()` | raw |
+| PHP | `include() / require()` | raw |
+| Java | `ClassLoader` | container |
+| .NET | `CSharpCodeProvider` | raw |
+| .NET | `Assembly.Load()` | csc, precompiled |
 
 ## Contribute
 

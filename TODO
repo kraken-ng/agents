@@ -1,8 +1,9 @@
 # TODO
 
 - [x] PHP Agent using `eval()` function.
-- [ ] PHP Agent using `include()` or `require()` functions.
-- [ ] PHP Agent using `create_function()` function (PHP <= 7 only).
+- [x] PHP Agent using `include()` or `require()` functions.
+- [x] PHP Agent using `create_function()` function (PHP <= 7 only).
+- [ ] PHP Agent using `assert()` function.
 - [x] Java Agent using `ClassLoader` library.
 - [ ] Java Agent using `JavaCompiler` (Java OpenJDK only).
 - [x] NET Agent using `CsharCodeProvider` library.
