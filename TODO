@@ -8,4 +8,4 @@
 - [ ] Java Agent using `JavaCompiler` (Java OpenJDK only).
 - [x] NET Agent using `CsharCodeProvider` library.
 - [x] NET Agent using `Assembly.Load()` function.
-- [ ] NET Agent using `Dynamic Method and Emitted MSIL Instructions`.
+- [x] NET Agent using `Dynamic Method and Emitted MSIL Instructions`.

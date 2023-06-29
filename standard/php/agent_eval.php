@@ -131,14 +131,14 @@ class Handler
     {
         $fields = explode($this->FIELD_SEPARATOR, $packed_request);
         if (sizeof($fields) < 1)
-            throw new Exception("unpack_data(): err explode() fields < 1", 1);
+            throw new Exception("unpack_data(): err explode() fields < 1 [" . @bin2hex($packed_request) . "]", 1);
 
         $data = array();
         foreach ($fields as $field)
         {
             $vals = explode($this->VALUE_SEPARATOR, $field);
             if (sizeof($vals) !== 2)
-                throw new Exception("unpack_data(): err explode() values !== 2", 1);
+                throw new Exception("unpack_data(): err explode() values !== 2 [" . @bin2hex($packed_request) . "]", 1);
 
             $data[$vals[0]] = $vals[1];
         }
