@@ -13,6 +13,7 @@ class Handler
     private $REQUEST_DATA_KEY                = "data";
     private $RESPONSE_DATA_KEY               = "data";
 
+    private $EX_CODE                         = "5";
     private $SUCC_CODE                       = "0";
     private $ERR_CODE                        = "1";
     private $FIELD_SEPARATOR                 = ",";
@@ -190,6 +191,8 @@ class Handler
     private function do_status()
     {
         $response  = "";
+        $response .= $this->pack_value("ex", $this->EX_CODE);
+        $response .= $this->FIELD_SEPARATOR;
         $response .= $this->pack_value("so", $this->get_so());
         $response .= $this->FIELD_SEPARATOR;
         $response .= $this->pack_value("pwd", str_replace("\\", "/", getcwd()));

@@ -32,6 +32,7 @@
         private final String REQUEST_DATA_KEY                = "data";
         private final String RESPONSE_DATA_KEY               = "data";
 
+        private final String EX_CODE                         = "1";
         private final String SUCC_CODE                       = "0";
         private final String ERR_CODE                        = "1";
         private final String FIELD_SEPARATOR                 = ",";
@@ -317,6 +318,8 @@
         private String do_status() throws Exception
         {
             String response = "";
+            response += pack_value("ex", EX_CODE, false);
+            response += FIELD_SEPARATOR;
             response += pack_value("so", get_so(), false);
             response += FIELD_SEPARATOR;
             response += pack_value("pwd", getServletContext().getRealPath("/").replace("\\", "/"), false);

@@ -23,6 +23,7 @@
         public const string REQUEST_DATA_KEY                = "data";
         public const string RESPONSE_DATA_KEY               = "data";
     
+        public const string EX_CODE                         = "7";
         public const string SUCC_CODE                       = "0";
         public const string ERR_CODE                        = "1";
         public const string FIELD_SEPARATOR                 = ",";
@@ -283,6 +284,8 @@
         private string do_status()
         {
             string response = "";
+            response += pack_value("ex", EX_CODE, false);
+            response += FIELD_SEPARATOR;
             response += pack_value("so", get_so(), false);
             response += FIELD_SEPARATOR;
             response += pack_value("pwd", Path.GetDirectoryName(this.Request.PhysicalPath).Replace(@"\", @"/"), false);
