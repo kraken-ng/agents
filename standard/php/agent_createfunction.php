@@ -249,7 +249,7 @@ class Handler
         try
         {
             ob_start();
-            $f = create_function(null, $mod_content_with_vars);
+            $f = @create_function(null, $mod_content_with_vars);
             $f();
             $mod_response_hex = ob_get_contents();
             ob_end_clean();
